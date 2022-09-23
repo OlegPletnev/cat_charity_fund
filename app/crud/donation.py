@@ -15,7 +15,7 @@ class CRUDDonation(CRUDBase):
             session: AsyncSession,
     ) -> List[Donation]:
         donations = await session.scalars(select(self.model).where(
-                self.model.user_id == user.id
+            self.model.user_id == user.id
         ))
         return donations.all()
 
