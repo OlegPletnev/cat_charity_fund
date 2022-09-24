@@ -13,7 +13,6 @@ from app.api.validators import (
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charity_project_crud
-
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectDB,
                                          CharityProjectUpdate)
@@ -31,8 +30,7 @@ async def get_all_projects(
         session: AsyncSession = Depends(get_async_session),
 ):
     """Возвращает список всех проектов."""
-    all_projects = await charity_project_crud.get_multi(session)
-    return all_projects
+    return await charity_project_crud.get_multi(session)
 
 
 @router.post(
@@ -71,8 +69,7 @@ async def remove_project(
     инвестированы средства, его можно только закрыть.
     """
     project = await check_project_before_delete(project_id, session)
-    project_delete = await charity_project_crud.remove(project, session)
-    return project_delete
+    return await charity_project_crud.remove(project, session)
 
 
 @router.patch(
@@ -81,9 +78,9 @@ async def remove_project(
     dependencies=[Depends(current_superuser)],
 )
 async def update_project(
-    project_id: PositiveInt,
-    obj_in: CharityProjectUpdate,
-    session: AsyncSession = Depends(get_async_session),
+        project_id: PositiveInt,
+        obj_in: CharityProjectUpdate,
+        session: AsyncSession = Depends(get_async_session),
 ) -> CharityProjectDB:
     """
     Только для суперюзеров.
